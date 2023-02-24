@@ -10,12 +10,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.ListPreference
-import androidx.preference.ListPreferenceDialogFragmentCompat
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.SwitchPreferenceCompat
+import androidx.preference.*
 import com.github.gotify.R
 import com.github.gotify.databinding.SettingsActivityBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -72,23 +67,33 @@ internal class SettingsActivity : AppCompatActivity(), OnSharedPreferenceChangeL
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            val messageLayout: ListPreference? =
-                findPreference(getString(R.string.setting_key_message_layout))
-            val notificationChannels: SwitchPreferenceCompat? =
-                findPreference(getString(R.string.setting_key_notification_channels))
-            messageLayout?.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _, _ ->
+            findPreference<ListPreference>(
+                getString(R.string.setting_key_message_layout)
+            )?.let { messageLayout ->
+                messageLayout.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                     showRestartDialog()
                     true
                 }
-            notificationChannels?.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _, _ ->
+            }
+            findPreference<SwitchPreferenceCompat>(
+                getString(R.string.setting_key_notification_channels)
+            )?.let { notificationChannels ->
+                notificationChannels.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         return@OnPreferenceChangeListener false
                     }
                     showRestartDialog()
                     true
                 }
+            }
+            findPreference<CheckBoxPreference>(
+                getString(R.string.setting_key_exclude_from_recent)
+            )?.let { excludeFromRecents ->
+                excludeFromRecents.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _, ->
+                    showRestartDialog()
+                    true
+                }
+            }
         }
 
         override fun onDisplayPreferenceDialog(preference: Preference) {

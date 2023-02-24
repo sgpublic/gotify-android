@@ -250,7 +250,7 @@ internal class WebSocketService : Service() {
     override fun onBind(intent: Intent): IBinder? = null
 
     private fun showForegroundNotification(title: String, message: String? = null) {
-        val notificationIntent = Intent(this, MessagesActivity::class.java)
+        val notificationIntent = MessagesActivity.createIntent(this)
 
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -324,7 +324,7 @@ internal class WebSocketService : Service() {
             intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
         } else {
-            intent = Intent(this, MessagesActivity::class.java)
+            intent = MessagesActivity.createIntent(this)
         }
 
         val contentIntent = PendingIntent.getActivity(
@@ -399,7 +399,7 @@ internal class WebSocketService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun showNotificationGroup(channelId: String) {
-        val intent = Intent(this, MessagesActivity::class.java)
+        val intent = MessagesActivity.createIntent(this)
         val contentIntent = PendingIntent.getActivity(
             this,
             0,

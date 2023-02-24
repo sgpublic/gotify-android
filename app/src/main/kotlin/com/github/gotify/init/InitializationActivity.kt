@@ -115,8 +115,8 @@ internal class InitializationActivity : AppCompatActivity() {
         settings.setUser(user.name, user.isAdmin)
         requestVersion {
             splashScreenActive = false
-            startActivity(Intent(this, MessagesActivity::class.java))
-            finish()
+            startActivity(MessagesActivity.createIntent(this))
+            finishAndRemoveTask()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

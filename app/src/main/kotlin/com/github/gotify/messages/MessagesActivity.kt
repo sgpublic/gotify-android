@@ -1,5 +1,6 @@
 package com.github.gotify.messages
 
+import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -18,10 +19,13 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -633,5 +637,15 @@ internal class MessagesActivity :
 
     companion object {
         private const val APPLICATION_ORDER = 1
+
+        fun createIntent(origin: Context): Intent {
+            return Intent(origin, MessagesActivity::class.java).also {
+                val excludeFromRecents = PreferenceManager.getDefaultSharedPreferences(origin)
+                    .getBoolean(origin.getString(R.string.setting_key_exclude_from_recent), false)
+                if (excludeFromRecents) {
+                    it.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                }
+            }
+        }
     }
 }
