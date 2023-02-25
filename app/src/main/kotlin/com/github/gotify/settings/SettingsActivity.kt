@@ -1,5 +1,6 @@
 package com.github.gotify.settings
 
+import android.app.ActivityManager
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.preference.*
 import com.github.gotify.R
 import com.github.gotify.databinding.SettingsActivityBinding
@@ -126,13 +128,15 @@ internal class SettingsActivity : AppCompatActivity(), OnSharedPreferenceChangeL
         }
 
         private fun restartApp() {
+            requireContext().getSystemService<ActivityManager>()?.appTasks?.forEach { task ->
+                task.finishAndRemoveTask()
+            }
             val packageManager = requireContext().packageManager
             val packageName = requireContext().packageName
             val intent = packageManager.getLaunchIntentForPackage(packageName)
             val componentName = intent!!.component
             val mainIntent = Intent.makeRestartActivityTask(componentName)
             startActivity(mainIntent)
-            Runtime.getRuntime().exit(0)
         }
     }
 
